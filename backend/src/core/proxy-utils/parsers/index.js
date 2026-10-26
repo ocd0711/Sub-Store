@@ -401,7 +401,11 @@ function URI_SS() {
             }
         }
 
-        proxy.udp = !!params['udp'];
+        proxy.udp = ![false, 0, '0', 'false', 'off'].includes(
+            typeof params['udp'] === 'string'
+                ? params['udp'].toLowerCase()
+                : params['udp'],
+        );
 
         const serverAndPort = serverAndPortArray[1];
         const portIdx = serverAndPort.lastIndexOf(':');
@@ -2126,7 +2130,6 @@ function URI_AnyTLS() {
         // eslint-disable-next-line no-unused-vars
         let [__, password, server, port, addons = '', name] =
             /^(.*?)@(.*?)(?::(\d+))?\/?(?:\?(.*?))?(?:#(.*?))?$/.exec(line);
-        password = decodeURIComponent(password);
         port = parseInt(`${port}`, 10);
         if (isNaN(port)) {
             port = 443;
@@ -2516,12 +2519,16 @@ function URI_Trojan() {
     };
 
     const parse = (line) => {
-        const matched = /^(trojan:\/\/.*?@.*?)(:(\d+))?\/?(\?.*?)?$/.exec(line);
+        // Split off the name first: with a "#name" but no query string, the port
+        // check below would not see the port and would append ":443" to the name.
+        let [newLine, name] = line.split(/#(.+)/, 2);
+        const matched = /^(trojan:\/\/.*?@.*?)(:(\d+))?\/?(\?.*?)?$/.exec(
+            newLine,
+        );
         const port = matched?.[2];
         if (!port) {
-            line = line.replace(matched[1], `${matched[1]}:443`);
+            newLine = newLine.replace(matched[1], `${matched[1]}:443`);
         }
-        let [newLine, name] = line.split(/#(.+)/, 2);
         const parser = getTrojanURIParser();
         const proxy = parser.parse(newLine);
         if (isNotBlank(name)) {

@@ -14,13 +14,17 @@
 <table>
 <tbody>
 <tr>
+<td width="180"><a href="https://www.thordata.com/?ls=tg&lk=substore"><img src="./assets/banners/Thordata.png" alt="Thordata" width="150"></a></td>
+<td><a href="https://www.thordata.com/?ls=tg&lk=substore">Thordata</a> ｜面向开发者与出海用户的代理服务，提供<b>住宅、ISP、移动及数据中心代理</b>。支持国家/城市定位、轮换会话与粘性会话，适用于公开网页采集、SEO 监控、接口调试和地区内容测试。新用户 <a href="https://www.thordata.com/?ls=tg&lk=substore">注册</a> 即送 <b>100MB 免费住宅代理</b>，首购使用优惠码<b>【SubStore10】</b>享 9 折优惠。</td>
+</tr>
+<tr>
 <td width="180"><a href="https://api.muteki.site/register?aff=XREAM&promo=XREAM"><img src="./assets/banners/MaruCode.jpg" alt="MaruCode" width="150"></a></td>
 <td><a href="https://api.muteki.site/register?aff=XREAM&promo=XREAM">MaruCode</a> 是一家偶尔做做慈善的小破站 API，自营号池，不搞充值营销套路，主要提供 Codex、Claude Code、GPT Image-2 等主流模型，支持 WebSocket 协议，明码标价(Codex 0.3x, CC 1.5x)，透明汇率(1:1)，<a href="https://api.muteki.site/register?aff=XREAM&promo=XREAM">新用户注册</a> 送 2 刀 💰 <a href="https://images-2.muteki.site">生图工作台 🖼</a></td>
 </tr>
 </tbody>
 </table>
 
-[📚 文档/DOC](https://github.com/sub-store-org/Sub-Store/wiki)
+📚 [文档/Doc](https://sub-store-org.github.io/doc) 🆕, [Wiki](https://github.com/sub-store-org/Sub-Store/wiki)
 
 ## sub.store Domain Safety Notice
 
@@ -59,6 +63,14 @@ Sub-Store also supports a configurable browser CORS allowlist for the backend AP
 - Node/server deployments use `SUB_STORE_CORS_ALLOWED_ORIGINS`; the default is `https://sub-store.vercel.app,http://substore.stash,https://substore.stash`.
 - Proxy App modules use the `cors` module argument; the default is `https://sub-store.vercel.app,http://substore.stash,https://substore.stash`.
 - Multiple origins can be separated by commas. Origins are matched exactly by scheme, host, and port. Set the value to `*` only when you accept the risk of any website reading the local backend through browser CORS.
+
+## Node push notifications
+
+For Node deployments, `SUB_STORE_PUSH_SERVICE` accepts a Shoutrrr URL or an existing HTTP/HTTPS URL template. Shoutrrr URLs are sent in-process with [shoutrrr-ts](https://github.com/Delusions6515/shoutrrr-ts); a separate `shoutrrr` executable is no longer used or required. HTTP/HTTPS URL templates still use the existing request path and `[推送标题]` / `[推送内容]` placeholders.
+
+The supported Shoutrrr URL families are Generic Webhook (`generic://`, `generic+https://`, `generic+http://`), Bark, Discord, Gotify, Google Chat (`hangouts://` alias), IFTTT, Join, Mattermost, ntfy, OpsGenie, Pushover, Pushbullet, Rocket.Chat, Slack, Microsoft Teams, Telegram, and Zulip. **Matrix (`matrix://`) and SMTP (`smtp://`) are not supported, and there is no fallback to the old executable.** Check existing configurations before upgrading; unsupported URLs produce a notification error instead of sending. See [upstream compatibility details](https://github.com/Delusions6515/shoutrrr-ts/blob/main/COMPATIBILITY.md) for URL options and caveats. Upstream checks use local Go-compatibility fixtures, not verified live delivery to every provider. The backend's tested Node version is in `.node-version`; check the upstream package for its current Node support.
+
+Push URLs may contain secrets: treat `SUB_STORE_PUSH_SERVICE` as privileged configuration. Diagnostics from the Shoutrrr path do not print the configured URL. This change does not alter the HTTP/HTTPS URL template path or its existing logging behavior.
 
 ## Core functionalities:
 
